@@ -1,0 +1,80 @@
+#!/usr/bin/env node
+
+const colors = require('colors');
+const path = require('path');
+const YiCommand = require('../lib');
+const yi = new YiCommand();
+
+let filePhoto = '';
+let fileVideo = '';
+
+yi.connect();
+
+yi.register().then((stat) => {
+  yi.getBattery()
+    .then((res) => {
+      console.log(colors.bold.grey.black.magenta('1. GET BATTERY:'), res);
+      return yi.switchVideo();
+    })
+    .then((res) => {
+      console.log(colors.bold.grey.black.magenta('2. SWITCH VIDEO MODE:'), res);
+      return yi.delay(3000);
+    })
+    .then(() => {
+      console.log(colors.bold.grey.black.magenta('3. DELAY 3 SECONDS'));
+      return yi.startRecordVideo()
+    })
+    .then((res) => {
+      console.log(colors.bold.grey.black.magenta('4. RECORD VIDEO:'), res);
+      return yi.delay(10000);
+    })
+    .then(() => {
+      console.log(colors.bold.grey.black.magenta('5. DELAY 10 SECONDS'));
+      return yi.stopRecordVideo()
+    })
+    .then((res) => {
+      console.log(colors.bold.grey.black.magenta('6. STOP VIDEO RECORD:'), res);
+      fileVideo = res.msg.param;
+      return yi.delay(3000);
+    })
+    .then(() => {
+      console.log(colors.bold.grey.black.magenta('7. DELAY 3 SECONDS'));
+      return yi.downloadFile(fileVideo, path.resolve(__dirname, 'video.mp4'));
+    })
+    .then((res) => {
+      console.log(colors.bold.grey.black.magenta('8. DOWNLOAD VIDEO FILE:'), res);
+      return yi.delay(3000);
+    })
+    .then(() => {
+      console.log(colors.bold.grey.black.magenta('9. DELAY 3 SECONDS'));
+      return yi.switchPhoto();
+    })
+    .then((res) => {
+      console.log(colors.bold.grey.black.magenta('10. SWITCH PHOTO MODE:'), res);
+      return yi.delay(3000);
+    })
+    .then(() => {
+      console.log(colors.bold.grey.black.magenta('11. DELAY 3 SECONDS'));
+      return yi.takePicture();
+    })
+    .then((res) => {
+      console.log(colors.bold.grey.black.magenta('12. TAKE PHOTO'), res);
+      filePhoto = res.msg.param;
+      return yi.delay(3000);
+    })
+    .then(() => {
+      console.log(colors.bold.grey.black.magenta('13. DELAY 3 SECONDS'));
+      return yi.downloadFile(filePhoto, path.resolve(__dirname, 'photo.jpg'));
+    })
+    .then((res) => {
+      console.log(colors.bold.grey.black.magenta('14. DOWNLOAD PHOTO FILE'), res);
+      return yi.delay(3000);
+    })
+    .then(() => {
+      console.log(colors.bold.grey.black.magenta('15. DELAY 3 SECONDS'));
+      yi.disconnect();
+    })
+    .then(() => {
+      console.log(colors.bold.grey.black.red('16. DISCONNECT CAMERA'))
+    })
+})
